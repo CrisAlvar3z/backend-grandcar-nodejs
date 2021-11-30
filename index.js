@@ -15,14 +15,9 @@ app.use(cors({ origin: (origin, callback) => callback(null, true), credentials: 
 
 //app session
 app.use(session({
-    name: "backend-grandcar",
-    secret: "yryGGeugidx34otGDuSF5sD9R8g0Gü3r8",
-    resave: false,
-    saveUninitialized: true,
     cookie: {
         path: "/",
         secure: true,
-        //domain: ".herokuapp.com", REMOVE THIS HELPED ME (I dont use a domain anymore)
         httpOnly: true
     }
 }));
