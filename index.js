@@ -12,7 +12,20 @@ app.use(cookieParser());
 
 // allow cors requests from any origin and with credentials
 app.use(cors({ origin: (origin, callback) => callback(null, true), credentials: true }));
-app.set("trust proxy", 1);
+
+//app session
+app.use(session({
+    name: "backend-grandcar",
+    secret: "yryGGeugidx34otGDuSF5sD9R8g0Gü3r8",
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        path: "/",
+        secure: true,
+        //domain: ".herokuapp.com", REMOVE THIS HELPED ME (I dont use a domain anymore)
+        httpOnly: true
+    }
+}));
 
 // api routes
 app.use('/vehiculos', require('./vehiculos/vehiculos.controller'));
