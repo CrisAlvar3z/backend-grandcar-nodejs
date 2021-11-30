@@ -11,13 +11,16 @@ app.set("trust proxy", 1);
 
 app.use(
     session({
-      secret: 'backend-grandcar',
-      resave: true,
-      saveUninitialized: false,
-      cookie: {
-        sameSite: 'none', // must be 'none' to enable cross-site delivery
-        secure: true, // must be true if sameSite='none'
-      }
+        name: "random_session",
+        secret: 'backend-grandcar',
+        resave: false,
+        saveUninitialized: true,
+        cookie: {
+            path: "/",
+            secure: true,
+            //domain: ".herokuapp.com", REMOVE THIS HELPED ME (I dont use a domain anymore)
+            httpOnly: true
+        }
     })
 );
 
