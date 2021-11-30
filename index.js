@@ -14,13 +14,7 @@ app.use(cookieParser());
 app.use(cors({ origin: (origin, callback) => callback(null, true), credentials: true }));
 
 //app session
-app.set("trust proxy",1);
-
-app.use(express.session({
-    secret : 'somesecret',
-    key : 'sid',
-    proxy : true, // add this when behind a reverse proxy, if you need secure cookies
-}));
+app.enable('trust proxy');
 
 // api routes
 app.use('/vehiculos', require('./vehiculos/vehiculos.controller'));
