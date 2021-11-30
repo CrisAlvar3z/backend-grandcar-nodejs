@@ -15,10 +15,9 @@ app.use(
         resave: false,
         saveUninitialized: true,
         cookie: {
-            sameSite: 'none',
             secure: true,
-            //domain: ".herokuapp.com", //REMOVE THIS HELPED ME (I dont use a domain anymore)
-            httpOnly: true
+            httpOnly: true,
+            sameSite: 'none',
         }
     })
 );
