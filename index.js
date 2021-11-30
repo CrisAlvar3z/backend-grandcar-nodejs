@@ -16,17 +16,10 @@ app.use(cors({ origin: (origin, callback) => callback(null, true), credentials: 
 //app session
 app.set("trust proxy",1);
 
-app.use(session({
-    name: "random_session",
-    secret: "yryGGeugidx34otGDuSF5sD9R8g0Gü3r8",
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-        path: "/",
-        secure: true,
-        //domain: ".herokuapp.com", REMOVE THIS HELPED ME (I dont use a domain anymore)
-        httpOnly: true
-    }
+app.use(express.session({
+    secret : 'somesecret',
+    key : 'sid',
+    proxy : true, // add this when behind a reverse proxy, if you need secure cookies
 }));
 
 // api routes
