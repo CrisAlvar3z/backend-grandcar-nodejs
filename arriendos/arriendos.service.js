@@ -2,6 +2,7 @@ const db = require('_helpers/db');
 const vehiculoService = require('../vehiculos/vehiculo.service');
 var moment = require('moment');  
 const { get } = require('./arriendos.controller');
+const { Op } = require('sequelize')
 
 module.exports = {
     getAllArriendos,
@@ -42,8 +43,8 @@ async function saveArriendo(params) {
 
 async function  getAllReservedDays(id) {
 
-  var date = new Date();
-  const arriendo = await db.Arriendo.findAll({attributes: ['fecha_salida', 'fecha_retorno']}, {where: id, fecha_retorno: date.now});
+  var date = Date.now();
+  const arriendo = await db.Arriendo.findAll({where: {vehiculoId: id, fecha_retorno: {[Op.gte]: date} }});
   return  arriendo.map(x => getDates(new Date(x.fecha_salida), new Date(x.fecha_retorno))).flat();
 
 }
