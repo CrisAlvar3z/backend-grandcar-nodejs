@@ -14,11 +14,6 @@ app.use(
         secret: 'backend-grandcar',
         resave: false,
         saveUninitialized: true,
-        cookie: {
-            secure: false,
-            httpOnly: true,
-            sameSite: 'None',
-        }
     })
 );
 
