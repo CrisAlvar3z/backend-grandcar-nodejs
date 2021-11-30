@@ -6,6 +6,20 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const errorHandler = require('_middleware/error-handler');
 
+app.set("trust proxy", 1);
+
+app.use(
+    session({
+      secret: 'backend-grandcar',
+      resave: true,
+      saveUninitialized: false,
+      cookie: {
+        sameSite: 'none', // must be 'none' to enable cross-site delivery
+        secure: true, // must be true if sameSite='none'
+      }
+    })
+);
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -13,8 +27,6 @@ app.use(cookieParser());
 // allow cors requests from any origin and with credentials
 app.use(cors({ origin: (origin, callback) => callback(null, true), credentials: true }));
 
-//app session
-app.enable('trust proxy');
 
 // api routes
 app.use('/vehiculos', require('./vehiculos/vehiculos.controller'));
