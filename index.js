@@ -14,10 +14,17 @@ app.use(cookieParser());
 app.use(cors({ origin: (origin, callback) => callback(null, true), credentials: true }));
 
 //app session
+app.set("trust proxy",1);
+
 app.use(session({
+    name: "random_session",
+    secret: "yryGGeugidx34otGDuSF5sD9R8g0Gü3r8",
+    resave: false,
+    saveUninitialized: true,
     cookie: {
         path: "/",
         secure: true,
+        //domain: ".herokuapp.com", REMOVE THIS HELPED ME (I dont use a domain anymore)
         httpOnly: true
     }
 }));
