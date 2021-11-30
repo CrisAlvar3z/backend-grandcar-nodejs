@@ -3,10 +3,11 @@ const { DataTypes } = require('sequelize');
 module.exports = model;
 
 function model(sequelize) {
+    
     const attributes = {
+        rut: { type: DataTypes.INTEGER, allowNull: false },
         email: { type: DataTypes.STRING, allowNull: false },
         passwordHash: { type: DataTypes.STRING, allowNull: false },
-        title: { type: DataTypes.STRING, allowNull: false },
         firstName: { type: DataTypes.STRING, allowNull: false },
         lastName: { type: DataTypes.STRING, allowNull: false },
         acceptTerms: { type: DataTypes.BOOLEAN },
@@ -22,6 +23,7 @@ function model(sequelize) {
             type: DataTypes.VIRTUAL,
             get() { return !!(this.verified || this.passwordReset); }
         }
+
     };
 
     const options = {

@@ -4,13 +4,19 @@ const db = require('_helpers/db');
 
 module.exports = {
     getAllVehiculos,
-    //getById,
+    getById,
 };
 
 async function getAllVehiculos() {
     const vehiculos = await db.Vehiculo.findAll();
     return vehiculos.map(x => basicDetails(x));
 }
+
+async function getById(id) {
+    const vehiculos = await db.Vehiculo.findByPk(id);
+    return vehiculos;
+}
+
 
 function basicDetails(vehiculo) {
     const { id, marca, modelo, anio, descripcion, precio_por_dia, img_url, disponibilidad } = vehiculo;

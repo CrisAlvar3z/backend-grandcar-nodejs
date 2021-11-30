@@ -16,6 +16,8 @@ app.use(cors({ origin: (origin, callback) => callback(null, true), credentials: 
 // api routes
 app.use('/vehiculos', require('./vehiculos/vehiculos.controller'));
 app.use('/accounts', require('./accounts/accounts.controller'));
+app.use('/domicilios', require('./domicilio/domicilio.controller'));
+app.use('/arriendos', require('./arriendos/arriendos.controller'));
 
 // global error handler
 app.use(errorHandler);

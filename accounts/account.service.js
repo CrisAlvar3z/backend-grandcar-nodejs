@@ -6,6 +6,7 @@ const { Op } = require('sequelize');
 const sendEmail = require('_helpers/send-email');
 const db = require('_helpers/db');
 const Role = require('_helpers/role');
+const domicilioService = require('../domicilio/domicilio.service');
 
 module.exports = {
     authenticate,
@@ -24,8 +25,7 @@ module.exports = {
 };
 
 async function authenticate({ email, password, ipAddress }) {
-    const account = await db.Account.scope('withHash').findOne({ where: { email } });
-
+    const account = await db.Account.scope('withHash').findOne({include: {model: db.Domicilio}}, {where: { email } });
     if (!account || !account.isVerified || !(await bcrypt.compare(password, account.passwordHash))) {
         throw 'Email or password is incorrect';
     }
@@ -33,7 +33,6 @@ async function authenticate({ email, password, ipAddress }) {
     // authentication successful so generate jwt and refresh tokens
     const jwtToken = generateJwtToken(account);
     const refreshToken = generateRefreshToken(account, ipAddress);
-
     // save refresh token
     await refreshToken.save();
 
@@ -47,7 +46,8 @@ async function authenticate({ email, password, ipAddress }) {
 
 async function refreshToken({ token, ipAddress }) {
     const refreshToken = await getRefreshToken(token);
-    const account = await refreshToken.getAccount();
+    const id = refreshToken.dataValues.accountId;
+    const account = await getAccount(id);
 
     // replace old refresh token with a new one and save
     const newRefreshToken = generateRefreshToken(account, ipAddress);
@@ -79,13 +79,13 @@ async function revokeToken({ token, ipAddress }) {
 
 async function register(params, origin) {
     // validate
-    if (await db.Account.findOne({ where: { email: params.email } })) {
+    if (await db.Account.findOne({ where: { email: params.account.email } })) {
         // send already registered error in email to prevent account enumeration
-        return await sendAlreadyRegisteredEmail(params.email, origin);
+        return await sendAlreadyRegisteredEmail(params.account.email, origin);
     }
 
     // create account object
-    const account = new db.Account(params);
+    const account = new db.Account(params.account);
 
     // first registered account is an admin
     const isFirstAccount = (await db.Account.count()) === 0;
@@ -93,10 +93,16 @@ async function register(params, origin) {
     account.verificationToken = randomTokenString();
 
     // hash password
-    account.passwordHash = await hash(params.password);
+    account.passwordHash = await hash(params.account.password);
 
     // save account
-    await account.save();
+    await account.save().then(result => x = result.id);
+
+    // crear domicilio
+    const domicilio = domicilioService.generateDomicilio(x, params.direccion.adress);
+    
+    // save domicilio
+    await domicilio.save();
 
     // send email
     await sendVerificationEmail(account, origin);
@@ -151,13 +157,13 @@ async function resetPassword({ token, password }) {
 }
 
 async function getAll() {
-    const accounts = await db.Account.findAll();
-    return accounts.map(x => basicDetails(x));
+    const accounts = await db.Account.findAll({include: db.Domicilio});
+    return accounts.map(x => x);
 }
 
 async function getById(id) {
     const account = await getAccount(id);
-    return basicDetails(account);
+    return account;
 }
 
 async function create(params) {
@@ -207,7 +213,7 @@ async function _delete(id) {
 // helper functions
 
 async function getAccount(id) {
-    const account = await db.Account.findByPk(id);
+    const account = await db.Account.findByPk(id,{include: [{model: db.Domicilio}, {model: db.Arriendo}]});
     if (!account) throw 'Account not found';
     return account;
 }
@@ -242,8 +248,8 @@ function randomTokenString() {
 }
 
 function basicDetails(account) {
-    const { id, title, firstName, lastName, email, role, created, updated, isVerified } = account;
-    return { id, title, firstName, lastName, email, role, created, updated, isVerified };
+    const { id, title, firstName, lastName, email, role, created, updated, isVerified ,  domicilio , arriendos} = account;
+    return { id, title, firstName, lastName, email, role, created, updated, isVerified, domicilio , arriendos};
 }
 
 async function sendVerificationEmail(account, origin) {

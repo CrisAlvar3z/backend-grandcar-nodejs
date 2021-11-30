@@ -10,7 +10,7 @@ const accountService = require('./account.service');
 router.post('/authenticate', authenticateSchema, authenticate);
 router.post('/refresh-token', refreshToken);
 router.post('/revoke-token', authorize(), revokeTokenSchema, revokeToken);
-router.post('/register', registerSchema, register);
+router.post('/register', registerSchema,register);
 router.post('/verify-email', verifyEmailSchema, verifyEmail);
 router.post('/forgot-password', forgotPasswordSchema, forgotPassword);
 router.post('/validate-reset-token', validateResetTokenSchema, validateResetToken);
@@ -38,6 +38,7 @@ function authenticate(req, res, next) {
         .then(({ refreshToken, ...account }) => {
             setTokenCookie(res, refreshToken);
             res.json(account);
+            //console.log("HOLaaaaaaaaaaaaA" + JSON. stringify(account))
         })
         .catch(next);
 }
@@ -49,6 +50,7 @@ function refreshToken(req, res, next) {
         .then(({ refreshToken, ...account }) => {
             setTokenCookie(res, refreshToken);
             res.json(account);
+            console.log(account)
         })
         .catch(next);
 }
@@ -79,18 +81,24 @@ function revokeToken(req, res, next) {
 
 function registerSchema(req, res, next) {
     const schema = Joi.object({
-        title: Joi.string().required(),
-        firstName: Joi.string().required(),
-        lastName: Joi.string().required(),
-        email: Joi.string().email().required(),
-        password: Joi.string().min(6).required(),
-        confirmPassword: Joi.string().valid(Joi.ref('password')).required(),
-        acceptTerms: Joi.boolean().valid(true).required()
+        account: {
+            rut: Joi.string().required(),
+            firstName: Joi.string().required(),
+            lastName: Joi.string().required(),
+            email: Joi.string().email().required(),
+            password: Joi.string().min(6).required(),
+            confirmPassword: Joi.string().valid(Joi.ref('password')).required(),
+            acceptTerms: Joi.boolean().valid(true).required()
+        },
+        direccion: {
+            adress: Joi.string().required(),
+        }
     });
     validateRequest(req, next, schema);
 }
 
 function register(req, res, next) {
+    //console.log("origin"+req.get('origin'));
     accountService.register(req.body, req.get('origin'))
         .then(() => res.json({ message: 'Registration successful, please check your email for verification instructions' }))
         .catch(next);
@@ -161,7 +169,6 @@ function getById(req, res, next) {
     if (Number(req.params.id) !== req.user.id && req.user.role !== Role.Admin) {
         return res.status(401).json({ message: 'Unauthorized' });
     }
-
     accountService.getById(req.params.id)
         .then(account => account ? res.json(account) : res.sendStatus(404))
         .catch(next);
