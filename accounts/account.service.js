@@ -25,7 +25,7 @@ module.exports = {
 };
 
 async function authenticate({ email, password, ipAddress }) {
-    const account = await db.Account.scope('withHash').findOne({where: { email } });
+    const account = await db.Account.scope('withHash').findOne({include: db.Domicilio,where: { email } });
     if (!account || !account.isVerified || !(await bcrypt.compare(password, account.passwordHash))) {
         throw 'Email or password is incorrect';
     }
@@ -213,7 +213,7 @@ async function _delete(id) {
 // helper functions
 
 async function getAccount(id) {
-    const account = await db.Account.findByPk(id,{include: [{model: db.Domicilio}, {model: db.Arriendo}]});
+    const account = await db.Account.findByPk(id,{include: [{model: db.Domicilio}, {model: db.Arriendo, include: {model: db.Vehiculo}}]});
     if (!account) throw 'Account not found';
     return account;
 }

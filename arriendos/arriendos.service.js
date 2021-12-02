@@ -29,10 +29,12 @@ async function saveArriendo(params) {
     const vehiculo = await db.Vehiculo.findByPk(arriendo.vehiculoId);
 
     var cant_dias = getDates(arriendo.fecha_salida, arriendo.fecha_retorno).length
-    //arriendo.fecha_salida = moment(arriendo.fecha_salida).format('dd/mm/yyy');
-    //arriendo.fecha_retorno = moment(arriendo.fecha_retorno, "DD MM YYYY", true);
+    console.log(arriendo.nombre_sucursal)
     arriendo.cant_dias = cant_dias;
     arriendo.total = cant_dias*vehiculo.precio_por_dia
+    if(params.despacho==false) {
+      arriendo.direccion_desp=params.nombre_sucursal
+    }
     console.log(arriendo)
     //save arriendo                                                                                                                                                                
     await arriendo.save()

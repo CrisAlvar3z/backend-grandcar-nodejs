@@ -8,7 +8,7 @@ module.exports = {
 };
 
 async function getAllVehiculos() {
-    const vehiculos = await db.Vehiculo.findAll();
+    const vehiculos = await db.Vehiculo.findAll({order: ['disponibilidad']});
     return vehiculos.map(x => basicDetails(x));
 }
 
