@@ -30,7 +30,7 @@ app.use('/vehiculos', require('./vehiculos/vehiculos.controller'));
 app.use('/accounts', require('./accounts/accounts.controller'));
 app.use('/domicilios', require('./domicilio/domicilio.controller'));
 app.use('/arriendos', require('./arriendos/arriendos.controller'));
-
+app.use('/transbank', require('./transbank/webpay_plus_controller'));
 // global error handler
 app.use(errorHandler);
 

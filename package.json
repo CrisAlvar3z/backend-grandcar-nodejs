@@ -25,6 +25,7 @@
     "nodemon": "^2.0.14",
     "rootpath": "^0.1.2",
     "sequelize": "^6.9.0",
-    "yamljs": "^0.3.0"
+    "yamljs": "^0.3.0",
+    "transbank-sdk": "^3.0.2"
   }
 }
