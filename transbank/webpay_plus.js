@@ -85,7 +85,7 @@ exports.commit = asyncHandler(async function (request, response, next) {
     //   viewData,
     // });
 
-    response.redirect(`http://localhost:4200/gracias?viewData=` + JSON.stringify(commitResponse) + '&step=' + step);
+    response.redirect(`https://grandcar-app.onrender.com/gracias?viewData=` + JSON.stringify(commitResponse) + '&step=' + step);
 
     return;
   }
@@ -102,7 +102,7 @@ exports.commit = asyncHandler(async function (request, response, next) {
     stepDescription = "En este paso luego de abandonar el formulario no es necesario realizar la confirmación ";
   }
 
-  response.redirect(`http://localhost:4200/gracias?viewData=` + JSON.stringify(viewData) + '&step=' + step);
+  response.redirect(`https://grandcar-app.onrender.com/gracias?viewData=` + JSON.stringify(viewData) + '&step=' + step);
 
   // response.render("webpay_plus/commit-error", {
   //   step,
