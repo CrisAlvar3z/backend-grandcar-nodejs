@@ -1,10 +1,10 @@
 {
     "database": {
-        "host": "remotemysql.com",
-        "port": 3306,
-        "user": "kOArQ9EksL",
-        "password": "EYn2jlsuKP",
-        "database": "kOArQ9EksL"
+        "host": "dpg-ceqa30sgqg42m39s53jg-a.oregon-postgres.render.com",
+        "port": 5432,
+        "user": "root",
+        "password": "PfBEMJPWHid9GVbMLA7E5dj93QoVEnhv",
+        "database": "logistic"
     },
     "secret": "THIS IS USED TO SIGN AND VERIFY JWT TOKENS, REPLACE IT WITH YOUR OWN SECRET, IT CAN BE ANY STRING,",
     "emailFrom": "grandcar.chile@gmail.com",
